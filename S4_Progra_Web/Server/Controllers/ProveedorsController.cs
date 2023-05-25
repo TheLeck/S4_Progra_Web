@@ -95,6 +95,25 @@ namespace S4_Progra_Web.Server.Controllers
 
             return CreatedAtAction("GetProveedor", new { id = proveedor.IdProveedor }, proveedor);
         }
+        /*
+        // POST: api/Proveedors/id/cubos
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("{id}/cubos")]
+        public async Task<ActionResult<Proveedor>> PostCubosProveedor(int id, List<Cube> cubos)
+        {
+            if (cubos == null)
+            {
+                return Problem("Lista de Cubos nula");
+            }
+            var proveedor = await _context.Proveedor.FindAsync(id);
+            if(proveedor != null)
+            {
+                proveedor.Cubos = cubos;
+            }
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+        */
 
         // DELETE: api/Proveedors/5
         [HttpDelete("{id}")]

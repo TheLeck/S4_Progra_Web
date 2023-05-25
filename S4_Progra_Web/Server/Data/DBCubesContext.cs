@@ -12,8 +12,7 @@ namespace S4_Progra_Web.Server.Data
         public DbSet<CubePedidos> CubePedidos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CubePedidos>()
-                .HasKey(c => new { c.CubeId, c.PedidosId });
+            modelBuilder.Entity<CubePedidos>().HasKey(c => new { c.CubeId, c.PedidosId });
         }
     }
 }

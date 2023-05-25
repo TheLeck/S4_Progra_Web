@@ -17,7 +17,7 @@ namespace S4_Progra_Web.Shared.Modelos
         public int Cantidad { get; set; }
         [Required]
         public int ProveedorId { get; set; }
-        public virtual Proveedor ProveedorData { get; set; }
+        public virtual Proveedor? ProveedorData { get; set; }
         //---------------------------------------------------
 
     }

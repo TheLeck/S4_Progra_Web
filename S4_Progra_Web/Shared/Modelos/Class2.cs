@@ -23,6 +23,6 @@ namespace S4_Progra_Web.Shared.Modelos
         [Range(0, 3)] // 0 - Pedido; 1 - Pagado; 2 - Enviado; 3 - Recibido;
         public int PedidosEstado { get; set; }
         // -----------------------------
-        public virtual ICollection<CubePedidos> OrderDetails { get; set; }
+        public virtual ICollection<CubePedidos>? OrderDetails { get; set; }
     }
 }

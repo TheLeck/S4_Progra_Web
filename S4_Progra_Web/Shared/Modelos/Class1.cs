@@ -19,6 +19,6 @@ namespace S4_Progra_Web.Shared.Modelos
         public string ProveedorCorreo { get; set; }
         [Required]
         public string ProveedorTelefono { get; set; }
-        public virtual ICollection<Cube> Cubos { get; set; }
+        public virtual ICollection<Cube>? Cubos { get; set; }
     }
 }

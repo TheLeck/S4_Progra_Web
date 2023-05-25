@@ -14,10 +14,12 @@ namespace S4_Progra_Web.Shared.Modelos
         [Required]
         public int Cantidad { get; set; }
         // ------------------------------------------
+        [Required]
         public int CubeId { get; set; }
-        public virtual Cube CubeData { get; set; }
+        public virtual Cube? CubeData { get; set; }
         //
+        [Required]
         public int PedidosId { get; set; }
-        public virtual Pedidos PedidosData { get; set; }
+        public virtual Pedidos? PedidosData { get; set; }
     }
 }
