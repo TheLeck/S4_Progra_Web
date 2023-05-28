@@ -1,0 +1,130 @@
+﻿@page "/proveedores"
+@using S4_Progra_Web.Shared.Modelos;
+@inject HttpClient _http
+@inject NavigationManager _navegar
+@inject IJSRuntime _JsRuntime
+<h3>Proveedores</h3>
+@if (ins)
+{
+    <EditForm Model="elProveedor" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label for="name" class="col-sm-2 col-form-label">Nombre: </label>
+            <InputText class="form-control" id="name" @bind-Value="elProveedor.ProveedorName" />
+            <ValidationMessage For="@(()=>elProveedor.ProveedorName)" />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="col-sm-2 col-form-label">Correo: </label>
+            <InputText class="form-control" id="email" @bind-Value="elProveedor.ProveedorCorreo" />
+            <ValidationMessage For="@(()=>elProveedor.ProveedorCorreo)" />
+        </div>
+        <div class="mb-3">
+            <label for="cal" class="col-sm-2 col-form-label">Telefono: </label>
+            <InputText class="form-control" id="cal" @bind-Value="elProveedor.ProveedorTelefono" />
+            <ValidationMessage For="@(()=>elProveedor.ProveedorTelefono)" />
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+        <button type="button" class="btn btn-primary" @onclick="cancel">Cancelar</button>
+
+    </EditForm>
+}
+else
+{
+    <button type="button" class="btn btn-primary" @onclick="insert">Agregar Proveedor</button>
+    @if (proveedores.Count > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr style="width: 90%">
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Telefono</th>
+                    <th>Id</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < proveedores.Count; i++)
+                {
+                    var indice = proveedores[i].IdProveedor;
+                    <tr>
+                        <td>@proveedores[i].ProveedorName</td>
+                        <td>@proveedores[i].ProveedorCorreo</td>
+                        <td>@proveedores[i].ProveedorTelefono</td>
+                        <td>@proveedores[i].IdProveedor</td>
+                        <td class="text-center">
+                            <span style="margin:3%" class="oi oi-pencil" @onclick="() => modificar(indice)"></span>
+                            <span style="margin:3%" class="oi oi-trash" @onclick="() => eliminar(indice)"></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h3>No hay proveedores</h3>
+    }
+}
+@code {
+    public Proveedor elProveedor = new();
+    public bool ins = false;
+    public HttpResponseMessage? res;
+    public List<Proveedor> proveedores = new();
+
+    // consulta para tabla
+    protected override async Task OnInitializedAsync()
+    {
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+
+    }
+
+    //llamada para inseertar
+    private async Task insert()
+    {
+        ins = true;
+
+    }
+
+    private void cancel()
+    {
+        ins = false;
+        elProveedor = new();
+    }
+
+
+    private async Task Guardar()
+    {
+        res = await _http.PostAsJsonAsync("/api/Proveedors", elProveedor);
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+        elProveedor = new();
+        // PONER  UNA NOTIFICACION DE EXITO
+        @if (res.IsSuccessStatusCode)
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Proveedor añadido corectamente"); // Alert
+            /*
+             * await _JsRuntime.InvokeVoidAsync("alert", "Warning!"); // Alert
+             * bool confirmed = await _JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?"); // Confirm
+             * string prompted = await _JsRuntime.InvokeAsync<string>("prompt", "Take some input:");
+             */
+        }
+        else
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Error al añadir el elemento, intente mas tarde.");
+        }
+    }
+    private async Task eliminar(int i)
+    {
+        bool confirmed = await _JsRuntime.InvokeAsync<bool>("confirm", "¿Esta seguro de eliminar el registro?"); // Confirm
+        if (confirmed)
+        {
+            await _http.DeleteAsync($"/api/Proveedors/{i}");
+            //_navegar.NavigateTo("/Personas");
+            proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+        }
+    }
+    private void modificar(int i)
+    {
+        _navegar.NavigateTo("/editprovee/" + i);
+    }
+}

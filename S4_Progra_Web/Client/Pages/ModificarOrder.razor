@@ -1,0 +1,117 @@
+﻿@page "/editorder/{i}"
+@using S4_Progra_Web.Shared.Modelos;
+@inject HttpClient _http
+@inject NavigationManager _navegar
+@inject IJSRuntime _JsRuntime
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+<h3>Modificar Order</h3>
+<EditForm Model="elPedido" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="direcc" class="col-sm-2 col-form-label">Direccion: </label>
+        <InputText class="form-control" id="direcc" @bind-Value="elPedido.PedidosDireccion" />
+        <ValidationMessage For="@(()=>elPedido.PedidosDireccion)" />
+    </div>
+    <div class="mb-3">
+        <label for="date" class="col-sm-2 col-form-label">Fecha: </label>
+        <InputDate class="form-control" id="date" @bind-Value="elPedido.PedidosFecha" />
+        <ValidationMessage For="@(()=>elPedido.PedidosFecha)" />
+    </div>
+    <div class="mb-3">
+        <InputRadioGroup @bind-Value="elPedido.PedidosEstado">
+            <label style="margin:3%">Pedido: <InputRadio Value="0" /></label>
+            <label style="margin:3%">Pagado: <InputRadio Value="1" /></label>
+            <label style="margin:3%">Enviado: <InputRadio Value="2" /></label>
+            <label style="margin:3%">Recivido: <InputRadio Value="3" /></label>
+            <br>
+        </InputRadioGroup>
+        <ValidationMessage For="@(()=>elPedido.PedidosEstado)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <button type="button" class="btn btn-primary" @onclick="cancel">Regresar</button>
+</EditForm>
+
+<table class="table table-striped">
+    <thead>
+        <tr style="width: 90%">
+            <th>Precio de Venta</th>
+            <th>Cantidad</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (detalles != null && detalles.Count > 0)
+        {
+            @foreach (var orderDetail in detalles)
+            {
+                <tr>
+                    <td>@orderDetail.CubeId</td>
+                    <td>@orderDetail.PedidosId</td>
+                    <td class="text-center">
+                        <span style="margin:3%" class="oi oi-trash" @onclick="() => eliminar(orderDetail.CubeId, orderDetail.PedidosId)"></span>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public string i { get; set; }
+    public Pedidos elPedido = new();
+    public HttpResponseMessage? res;
+    public List<Pedidos> pedidos = new();
+    public List<CubePedidos> detalles = new();
+
+
+    // Obtener valores de cubo
+    protected override async Task OnInitializedAsync()
+    {
+        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos/" + i);
+        if (pedidos[0] != null) { elPedido = pedidos[0]; }
+        if (pedidos[0].OrderDetails != null)
+        {
+            detalles = pedidos[0].OrderDetails.ToList();
+        }
+    }
+
+    private void cancel()
+    {
+        _navegar.NavigateTo("https://localhost:7234/orders");
+    }
+
+    private async Task Guardar()
+    {
+        res = await _http.PutAsJsonAsync("/api/pedidos/" + i, elPedido);
+        elPedido = new();
+        // PONER  UNA NOTIFICACION DE EXITO
+        @if (res.IsSuccessStatusCode)
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Proveedor modificado corectamente"); // Alert
+        }
+        else
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Error al modifiacar el elemento, intente mas tarde.");
+        }
+        _navegar.NavigateTo("https://localhost:7234/orders");
+
+    }
+
+    private async Task eliminar(int i1, int i2)
+    {
+        bool confirmed = await _JsRuntime.InvokeAsync<bool>("confirm", "¿Esta seguro de eliminar el registro?"); // Confirm
+        if (confirmed)
+        {
+            await _http.DeleteAsync($"/api/CubePedidos/{i1}/{i2}");
+            //_navegar.NavigateTo("/Personas");
+            //pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/CubePedidos/" + i);
+            pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos/" + i);
+            if (pedidos[0].OrderDetails != null)
+            {
+                detalles = pedidos[0].OrderDetails.ToList();
+            }
+        }
+    }
+}

@@ -1,0 +1,94 @@
+﻿@page "/editcube/{i}"
+@using S4_Progra_Web.Shared.Modelos;
+@inject HttpClient _http
+@inject NavigationManager _navegar
+@inject IJSRuntime _JsRuntime
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+<h3>ModificarCubes</h3>
+<EditForm Model="elCube" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="name" class="col-sm-2 col-form-label">Nombre: </label>
+        <InputText class="form-control" id="name" @bind-Value="elCube.Nombre" />
+        <ValidationMessage For="@(()=>elCube.Nombre)" />
+    </div>
+    <div class="mb-3">
+        <label for="email" class="col-sm-2 col-form-label">Modelo: </label>
+        <InputText class="form-control" id="email" @bind-Value="elCube.Modelo" />
+        <ValidationMessage For="@(()=>elCube.Modelo)" />
+    </div>
+    <div class="mb-3">
+        <label for="cal" class="col-sm-2 col-form-label">Precio: </label>
+        <InputNumber class="form-control" id="cal" @bind-Value="elCube.Precio" />
+        <ValidationMessage For="@(()=>elCube.Precio)" />
+    </div>
+    <div class="mb-3">
+        <label for="cal" class="col-sm-2 col-form-label">Cantidad: </label>
+        <InputNumber class="form-control" id="cal" @bind-Value="elCube.Cantidad" />
+        <ValidationMessage For="@(()=>elCube.Cantidad)" />
+    </div>
+    <div class="mb-3">
+        <!--
+        <label for="cal" class="col-sm-2 col-form-label">Id Proveedor: </label>
+        <InputNumber class="form-control" id="cal" @bind-Value="elCube.ProveedorId" />
+        -->
+        <label for="cal" class="col-sm-2 col-form-label">Id Proveedor: </label>
+        <InputSelect @bind-Value="elCube.ProveedorId" class="w-25 p-2">
+            <option value="0" selected>Selecciona un Proveedor...</option>
+            @foreach (var c in proveedores)
+            {
+                <option value="@c.IdProveedor">@c.ProveedorName</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(()=>elCube.ProveedorId)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <button type="button" class="btn btn-primary" @onclick="cancel">Cancelar</button>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public string i { get; set; }
+    public List<Cube> Cube = new();
+    public Cube elCube = new();
+    public HttpResponseMessage? res;
+    public List<Proveedor> proveedores = new();
+
+
+    // Obtener valores de cubo
+    protected override async Task OnInitializedAsync()
+    {
+        Cube = await _http.GetFromJsonAsync<List<Cube>>("https://localhost:7234/api/Cubes/"+i);
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+        elCube = Cube[0];
+    }
+    private void cancel()
+    {
+        _navegar.NavigateTo("https://localhost:7234/inventario");
+    }
+
+
+    private async Task Guardar()
+    {
+        res = await _http.PutAsJsonAsync("/api/Cubes/" + i, elCube);
+        elCube = new();
+        // PONER  UNA NOTIFICACION DE EXITO
+        @if (res.IsSuccessStatusCode)
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Cubo modificado corectamente"); // Alert
+            /*
+             * await _JsRuntime.InvokeVoidAsync("alert", "Warning!"); // Alert
+             * bool confirmed = await _JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?"); // Confirm
+             * string prompted = await _JsRuntime.InvokeAsync<string>("prompt", "Take some input:");
+             */
+        }
+        else
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Error al modifiacar el elemento, intente mas tarde.");
+        }
+        _navegar.NavigateTo("https://localhost:7234/inventario");
+
+    }
+}

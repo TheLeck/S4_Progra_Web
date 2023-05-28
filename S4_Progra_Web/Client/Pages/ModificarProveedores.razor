@@ -1,0 +1,72 @@
+﻿@page "/editprovee/{i}"
+@using S4_Progra_Web.Shared.Modelos;
+@inject HttpClient _http
+@inject NavigationManager _navegar
+@inject IJSRuntime _JsRuntime
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+<h3>Modificar Proveedores</h3>
+<EditForm Model="elProveedor" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="name" class="col-sm-2 col-form-label">Nombre: </label>
+        <InputText class="form-control" id="name" @bind-Value="elProveedor.ProveedorName" />
+        <ValidationMessage For="@(()=>elProveedor.ProveedorName)" />
+    </div>
+    <div class="mb-3">
+        <label for="email" class="col-sm-2 col-form-label">Correo: </label>
+        <InputText class="form-control" id="email" @bind-Value="elProveedor.ProveedorCorreo" />
+        <ValidationMessage For="@(()=>elProveedor.ProveedorCorreo)" />
+    </div>
+    <div class="mb-3">
+        <label for="cal" class="col-sm-2 col-form-label">Telefono: </label>
+        <InputText class="form-control" id="cal" @bind-Value="elProveedor.ProveedorTelefono" />
+        <ValidationMessage For="@(()=>elProveedor.ProveedorTelefono)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <button type="button" class="btn btn-primary" @onclick="cancel">Cancelar</button>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public string i { get; set; }
+    public Proveedor elProveedor = new();
+    public HttpResponseMessage? res;
+    public List<Proveedor> proveedores = new();
+
+
+    // Obtener valores de cubo
+    protected override async Task OnInitializedAsync()
+    {
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors/"+ i);
+        elProveedor = proveedores[0];
+    }
+
+    private void cancel()
+    {
+        _navegar.NavigateTo("https://localhost:7234/proveedores");
+    }
+
+    private async Task Guardar()
+    {
+        res = await _http.PutAsJsonAsync("/api/proveedors/" + i, elProveedor);
+        elProveedor = new();
+        // PONER  UNA NOTIFICACION DE EXITO
+        @if (res.IsSuccessStatusCode)
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Proveedor modificado corectamente"); // Alert
+            /*
+             * await _JsRuntime.InvokeVoidAsync("alert", "Warning!"); // Alert
+             * bool confirmed = await _JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?"); // Confirm
+             * string prompted = await _JsRuntime.InvokeAsync<string>("prompt", "Take some input:");
+             */
+        }
+        else
+        {
+            await _JsRuntime.InvokeVoidAsync("alert", "Error al modifiacar el elemento, intente mas tarde.");
+        }
+        _navegar.NavigateTo("https://localhost:7234/proveedores");
+
+    }
+}

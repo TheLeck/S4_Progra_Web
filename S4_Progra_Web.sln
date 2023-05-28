@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S4_Progra_Web.Server", "S4_Progra_Web\Server\S4_Progra_Web.Server.csproj", "{A309B144-7038-48AC-8FD0-FDA81FD36C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S4_Progra_Web.Server", "S4_Progra_Web\Server\S4_Progra_Web.Server.csproj", "{A309B144-7038-48AC-8FD0-FDA81FD36C4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S4_Progra_Web.Client", "S4_Progra_Web\Client\S4_Progra_Web.Client.csproj", "{CB296AA1-978D-4ADC-988E-5D45C37DE060}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S4_Progra_Web.Client", "S4_Progra_Web\Client\S4_Progra_Web.Client.csproj", "{CB296AA1-978D-4ADC-988E-5D45C37DE060}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S4_Progra_Web.Shared", "S4_Progra_Web\Shared\S4_Progra_Web.Shared.csproj", "{2A0EF090-21E5-4966-B90A-76EFD263484B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S4_Progra_Web.Shared", "S4_Progra_Web\Shared\S4_Progra_Web.Shared.csproj", "{2A0EF090-21E5-4966-B90A-76EFD263484B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

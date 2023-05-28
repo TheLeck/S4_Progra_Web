@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using S4_Progra_Web.Server.Data;
 using S4_Progra_Web.Shared.Modelos;
 
@@ -25,10 +27,10 @@ namespace S4_Progra_Web.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CubePedidos>>> GetCubePedidos()
         {
-          if (_context.CubePedidos == null)
-          {
-              return NotFound();
-          }
+            if (_context.CubePedidos == null)
+            {
+                return NotFound();
+            }
             return await _context.CubePedidos.ToListAsync();
         }
 
@@ -36,10 +38,10 @@ namespace S4_Progra_Web.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CubePedidos>> GetCubePedidos(int id)
         {
-          if (_context.CubePedidos == null)
-          {
-              return NotFound();
-          }
+            if (_context.CubePedidos == null)
+            {
+                return NotFound();
+            }
             var cubePedidos = await _context.CubePedidos.FindAsync(id);
 
             if (cubePedidos == null)
@@ -86,10 +88,10 @@ namespace S4_Progra_Web.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<CubePedidos>> PostCubePedidos(CubePedidos cubePedidos)
         {
-          if (_context.CubePedidos == null)
-          {
-              return Problem("Entity set 'DBCubesContext.CubePedidos'  is null.");
-          }
+            if (_context.CubePedidos == null)
+            {
+                return Problem("Entity set 'DBCubesContext.CubePedidos'  is null.");
+            }
             _context.CubePedidos.Add(cubePedidos);
             try
             {
@@ -110,22 +112,20 @@ namespace S4_Progra_Web.Server.Controllers
             return CreatedAtAction("GetCubePedidos", new { id = cubePedidos.CubeId }, cubePedidos);
         }
 
-        // DELETE: api/CubePedidos/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCubePedidos(int id)
+
+
+        // DELETE: api/CubePedidos/5/6
+        [HttpDelete("{ida1}/{ida2}")]
+        public async Task<IActionResult> DeleteCubePedidos(int ida1, int ida2)
         {
             if (_context.CubePedidos == null)
             {
                 return NotFound();
             }
-            var cubePedidos = await _context.CubePedidos.FindAsync(id);
-            if (cubePedidos == null)
-            {
-                return NotFound();
-            }
-
-            _context.CubePedidos.Remove(cubePedidos);
-            await _context.SaveChangesAsync();
+            var entity = new CubePedidos { CubeId = ida1, PedidosId = ida2 };
+            _context.CubePedidos.Attach(entity);
+            _context.CubePedidos.Remove(entity);
+            _context.SaveChanges();
 
             return NoContent();
         }
