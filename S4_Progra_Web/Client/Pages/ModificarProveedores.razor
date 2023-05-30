@@ -39,13 +39,13 @@
     // Obtener valores de cubo
     protected override async Task OnInitializedAsync()
     {
-        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors/"+ i);
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("/api/Proveedors/"+ i);
         elProveedor = proveedores[0];
     }
 
     private void cancel()
     {
-        _navegar.NavigateTo("https://localhost:7234/proveedores");
+        _navegar.NavigateTo("/proveedores");
     }
 
     private async Task Guardar()
@@ -66,7 +66,7 @@
         {
             await _JsRuntime.InvokeVoidAsync("alert", "Error al modifiacar el elemento, intente mas tarde.");
         }
-        _navegar.NavigateTo("https://localhost:7234/proveedores");
+        _navegar.NavigateTo("/proveedores");
 
     }
 }

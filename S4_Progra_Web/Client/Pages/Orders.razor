@@ -107,7 +107,7 @@ else
     // consulta para tabla
     protected override async Task OnInitializedAsync()
     {
-        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos");
+        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("/api/Pedidos");
         Console.WriteLine(pedidos);
 
     }
@@ -115,7 +115,7 @@ else
     //llamada para inseertar
     private async Task showped()
     {
-        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos");
+        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("/api/Pedidos");
         ins = true;
 
     }
@@ -135,7 +135,7 @@ else
     private async Task Guardar()
     {
         a = true;
-        Cubos = await _http.GetFromJsonAsync<List<Cube>>("https://localhost:7234/api/Cubes");
+        Cubos = await _http.GetFromJsonAsync<List<Cube>>("/api/Cubes");
         res = await _http.PostAsJsonAsync("/api/Pedidos", elPedido);
     }
 
@@ -169,7 +169,7 @@ else
         {
             await _http.DeleteAsync($"/api/pedidos/{i}");
             //_navegar.NavigateTo("/Personas");
-            pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos");
+            pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("/api/Pedidos");
         }
     }
     private void modificar(int i)

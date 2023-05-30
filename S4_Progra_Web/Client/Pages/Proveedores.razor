@@ -75,7 +75,7 @@ else
     // consulta para tabla
     protected override async Task OnInitializedAsync()
     {
-        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("/api/Proveedors");
 
     }
 
@@ -96,7 +96,7 @@ else
     private async Task Guardar()
     {
         res = await _http.PostAsJsonAsync("/api/Proveedors", elProveedor);
-        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+        proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("/api/Proveedors");
         elProveedor = new();
         // PONER  UNA NOTIFICACION DE EXITO
         @if (res.IsSuccessStatusCode)
@@ -120,7 +120,7 @@ else
         {
             await _http.DeleteAsync($"/api/Proveedors/{i}");
             //_navegar.NavigateTo("/Personas");
-            proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("https://localhost:7234/api/Proveedors");
+            proveedores = await _http.GetFromJsonAsync<List<Proveedor>>("/api/Proveedors");
         }
     }
     private void modificar(int i)

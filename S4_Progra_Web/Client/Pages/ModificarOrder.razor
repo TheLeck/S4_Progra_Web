@@ -69,7 +69,7 @@
     // Obtener valores de cubo
     protected override async Task OnInitializedAsync()
     {
-        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos/" + i);
+        pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("/api/Pedidos/" + i);
         if (pedidos[0] != null) { elPedido = pedidos[0]; }
         if (pedidos[0].OrderDetails != null)
         {
@@ -79,7 +79,7 @@
 
     private void cancel()
     {
-        _navegar.NavigateTo("https://localhost:7234/orders");
+        _navegar.NavigateTo("/orders");
     }
 
     private async Task Guardar()
@@ -95,7 +95,7 @@
         {
             await _JsRuntime.InvokeVoidAsync("alert", "Error al modifiacar el elemento, intente mas tarde.");
         }
-        _navegar.NavigateTo("https://localhost:7234/orders");
+        _navegar.NavigateTo("/orders");
 
     }
 
@@ -107,7 +107,7 @@
             await _http.DeleteAsync($"/api/CubePedidos/{i1}/{i2}");
             //_navegar.NavigateTo("/Personas");
             //pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/CubePedidos/" + i);
-            pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("https://localhost:7234/api/Pedidos/" + i);
+            pedidos = await _http.GetFromJsonAsync<List<Pedidos>>("/api/Pedidos/" + i);
             if (pedidos[0].OrderDetails != null)
             {
                 detalles = pedidos[0].OrderDetails.ToList();
