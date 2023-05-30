@@ -40,7 +40,7 @@ namespace S4_Progra_Web.Server.Controllers
           {
               return NotFound();
           }
-            var pedidos = await _context.Pedidos.Where(x => x.PedidosId == id).Include(c => c.OrderDetails).ToListAsync();
+            var pedidos = await _context.Pedidos.Where(x => x.PedidosId == id).Include(c => c.OrderDetails).ThenInclude(z => z.CubeData).ToListAsync();
 
             if (pedidos == null)
             {
